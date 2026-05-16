@@ -10,27 +10,28 @@ function truncateAddress(address) {
   return `${address.slice(0, 6)}…${address.slice(-4)}`;
 }
 
-export default function WalletConnect({ account, chainId, isConnecting, error, onConnect, onDisconnect }) {
+export default function WalletConnect({ account, chainId, walletType, isConnecting, error, onDisconnect }) {
   const networkName = chainId ? (CHAIN_NAMES[chainId] ?? `Chain ${chainId}`) : null;
+
+  if (!account) return null;
 
   return (
     <div className="wallet-connect">
-      {account ? (
-        <div className="wallet-info">
-          <span className="wallet-badge">
-            <span className="wallet-dot" />
-            {truncateAddress(account)}
+      <div className="wallet-info">
+        <span className="wallet-badge">
+          <span className="wallet-dot" />
+          {truncateAddress(account)}
+        </span>
+        {walletType && (
+          <span className={`wallet-type-badge wallet-type-badge--${walletType}`}>
+            {walletType === "local" ? "Local" : "MetaMask"}
           </span>
-          {networkName && <span className="network-badge">{networkName}</span>}
-          <button className="btn btn-outline" onClick={onDisconnect}>
-            Disconnect
-          </button>
-        </div>
-      ) : (
-        <button className="btn btn-primary" onClick={onConnect} disabled={isConnecting}>
-          {isConnecting ? "Connecting…" : "Connect Wallet"}
+        )}
+        {networkName && <span className="network-badge">{networkName}</span>}
+        <button className="btn btn-outline" onClick={onDisconnect}>
+          Disconnect
         </button>
-      )}
+      </div>
       {error && <p className="error-text">{error}</p>}
     </div>
   );

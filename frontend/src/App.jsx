@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useWeb3 } from "./hooks/useWeb3.js";
 import WalletConnect from "./components/WalletConnect.jsx";
+import WalletCreator from "./components/WalletCreator.jsx";
 import TokenDashboard from "./components/TokenDashboard.jsx";
 import NFTGallery from "./components/NFTGallery.jsx";
 import VaultDashboard from "./components/VaultDashboard.jsx";
@@ -8,7 +9,12 @@ import VaultDashboard from "./components/VaultDashboard.jsx";
 const TABS = ["Token", "NFT", "Vault"];
 
 export default function App() {
-  const { provider, signer, account, chainId, isConnecting, error, connect, disconnect } = useWeb3();
+  const {
+    signer, account, chainId, walletType,
+    isConnecting, error,
+    connectMetaMask, createWallet, importFromPrivateKey, importFromMnemonic, disconnect,
+  } = useWeb3();
+
   const [activeTab, setActiveTab] = useState("Token");
 
   return (
@@ -19,56 +25,61 @@ export default function App() {
           <WalletConnect
             account={account}
             chainId={chainId}
+            walletType={walletType}
             isConnecting={isConnecting}
             error={error}
-            onConnect={connect}
             onDisconnect={disconnect}
           />
         </div>
       </header>
 
       <main className="app-main">
-        <nav className="tab-bar">
-          {TABS.map((tab) => (
-            <button
-              key={tab}
-              className={`tab-btn ${activeTab === tab ? "active" : ""}`}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab}
-            </button>
-          ))}
-        </nav>
+        {!account ? (
+          <WalletCreator
+            isConnecting={isConnecting}
+            error={error}
+            onCreateWallet={createWallet}
+            onImportFromPrivateKey={importFromPrivateKey}
+            onImportFromMnemonic={importFromMnemonic}
+            onConnectMetaMask={connectMetaMask}
+          />
+        ) : (
+          <>
+            <nav className="tab-bar">
+              {TABS.map((tab) => (
+                <button
+                  key={tab}
+                  className={`tab-btn ${activeTab === tab ? "active" : ""}`}
+                  onClick={() => setActiveTab(tab)}
+                >
+                  {tab}
+                </button>
+              ))}
+            </nav>
 
-        <div className="tab-content">
-          {activeTab === "Token" && (
-            <TokenDashboard signer={signer} account={account} />
-          )}
-          {activeTab === "NFT" && (
-            <NFTGallery signer={signer} account={account} />
-          )}
-          {activeTab === "Vault" && (
-            <VaultDashboard signer={signer} account={account} />
-          )}
-        </div>
+            <div className="tab-content">
+              {activeTab === "Token" && (
+                <TokenDashboard signer={signer} account={account} />
+              )}
+              {activeTab === "NFT" && (
+                <NFTGallery signer={signer} account={account} />
+              )}
+              {activeTab === "Vault" && (
+                <VaultDashboard signer={signer} account={account} />
+              )}
+            </div>
+          </>
+        )}
       </main>
 
       <footer className="app-footer">
         <p>
           Web3 Examples — ERC-20 · ERC-721 · Staking Vault |{" "}
-          <a
-            href="https://hardhat.org"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a href="https://hardhat.org" target="_blank" rel="noreferrer">
             Hardhat
           </a>{" "}
           +{" "}
-          <a
-            href="https://docs.ethers.org/v6/"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a href="https://docs.ethers.org/v6/" target="_blank" rel="noreferrer">
             ethers.js v6
           </a>
         </p>
