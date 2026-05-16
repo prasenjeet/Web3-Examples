@@ -1,0 +1,24 @@
+{
+  "name": "web3-examples",
+  "version": "1.0.0",
+  "description": "Production-quality Web3 sample project with ERC-20, ERC-721, and staking vault contracts",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "test:coverage": "hardhat coverage",
+    "deploy:local": "hardhat run scripts/deploy.js --network localhost",
+    "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia",
+    "interact:token": "hardhat run scripts/interact-token.js --network localhost",
+    "interact:nft": "hardhat run scripts/interact-nft.js --network localhost",
+    "node": "hardhat node",
+    "clean": "hardhat clean"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.22.0",
+    "hardhat-gas-reporter": "^1.0.9"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.2"
+  }
+}
